@@ -9,16 +9,16 @@ public class DayNightCycle : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		transform.Rotate (Time.deltaTime * Time.timeScale * timeSpeed, 0f, 0f);
+		transform.Rotate (0f, 0f, Time.deltaTime * Time.timeScale * timeSpeed);
 	}
 
-	public float HourOfDay{
+	public float HourOfDay {
 		get {
-			return (transform.rotation.eulerAngles.x / 360f) * 24f;
+			return (transform.rotation.eulerAngles.z / 360f) * 24f;
 		}
 		set {
 			Quaternion q = transform.rotation;
-			q.eulerAngles = new Vector3 ((value / 24f) * 360f , q.eulerAngles.y, q.eulerAngles.z);
+			q.eulerAngles = new Vector3 (q.eulerAngles.x, q.eulerAngles.y, (value / 24f) * 360f);
 			transform.rotation = q;
 		}
 	}

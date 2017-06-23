@@ -19,50 +19,50 @@ public class PlayerIO : MonoBehaviour {
 	void Update () {
 		playerAnimator.SetBool ("walking", Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.A) || Input.GetKey (KeyCode.S) || Input.GetKey (KeyCode.D));
 		if (GameObject.FindWithTag ("FPSController").transform.position.y < -20) {
-			Debug.Log("Test");
-			GameObject.FindWithTag("FPSController").transform.position = new Vector3(GameObject.FindWithTag("FPSController").transform.position.x, 60, GameObject.FindWithTag("FPSController").transform.position.z);
+			Debug.Log ("Test");
+			GameObject.FindWithTag ("FPSController").transform.position = new Vector3 (GameObject.FindWithTag ("FPSController").transform.position.x, 60, GameObject.FindWithTag ("FPSController").transform.position.z);
 		}
-		if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)){
-			Ray ray = GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f,0.5f,0.5f));
+		if (Input.GetMouseButtonDown (0) || Input.GetMouseButtonDown (1) || Input.GetMouseButtonDown (2) || Input.GetKeyDown(KeyCode.C)) {
+			Ray ray = Camera.main.ViewportPointToRay (new Vector3 (0.5f, 0.5f, 0.5f));
 			RaycastHit hit;
-			if (Physics.Raycast (ray,out hit, maxInteractDistance)) {
-				Chunk chunk = hit.transform.GetComponent<Chunk>();
-				if (chunk == null){
+			float rayDistance = maxInteractDistance;
+			if (!resetCamera) {
+				rayDistance *= 3.14159f;
+			}
+			if (Physics.Raycast (ray, out hit, rayDistance)) {
+				Chunk chunk = hit.transform.GetComponent<Chunk> ();
+				if (chunk == null) {
 					return;
 				}
-				if (Input.GetMouseButtonDown(0)){
+				if (Input.GetMouseButtonDown (0)) {
 					Vector3 p = hit.point;
 					p -= hit.normal / 4;
-					chunk.SetBrick(0, p);
+					chunk.SetBrick (0, p);
 				} 
 				if (Input.GetMouseButtonDown (1)) {
 					Vector3 p = hit.point;
-					if (selectedInventory != 0){
+					if (selectedInventory != 0) {
 						p += hit.normal / 4;
-						chunk.SetBrick(selectedInventory, p);
+						chunk.SetBrick (selectedInventory, p);
 					}
 				}
-				if (Input.GetMouseButtonDown(2)) {
+				if (Input.GetMouseButtonDown (2) || Input.GetKeyDown(KeyCode.C)) {
 					Vector3 p = hit.point;
 					p -= hit.normal / 4;
-					selectedInventory = chunk.GetByte(p);
+					selectedInventory = chunk.GetByte (p);
 				}
 			}
 		}
 		if (Input.GetKeyDown (KeyCode.F5)) {
 			if (!resetCamera) {
-				transform.localPosition -= Vector3.forward * 2;
-				GameObject.FindWithTag("MinecraftPlayer").layer = 1;
-				resetCamera = true;
+				Camera.main.transform.localPosition -= Vector3.forward * 3.14159f;
 			} else {
-				transform.position = transform.parent.root.transform.localPosition + new Vector3(0f, 0.7f, 0.06f);
-				transform.rotation = transform.parent.root.transform.rotation;
-				GameObject.FindWithTag("MinecraftPlayer").layer = 8;
-				resetCamera = false;
+				Camera.main.transform.position = transform.position;
 			}
+			resetCamera = !resetCamera;
 		}
 		if (Input.GetKey (KeyCode.Escape) && Input.GetKey (KeyCode.F1)) {
-			Application.Quit();
+			Application.Quit ();
 		}
 	}
 }
