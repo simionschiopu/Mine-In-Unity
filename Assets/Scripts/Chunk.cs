@@ -125,7 +125,9 @@ public class Chunk : MonoBehaviour {
 						BuildFace (brick, new Vector3 (x, y, z + 1), Vector3.up, Vector3.right, false, verts, uvs, tris);
 				}
 			}
-		}		
+            // prevent lag? Only noticable in build!
+            yield return new WaitForFixedUpdate();
+        }		
 		visualMesh.vertices = verts.ToArray ();
 		visualMesh.uv = uvs.ToArray ();
 		visualMesh.triangles = tris.ToArray ();
