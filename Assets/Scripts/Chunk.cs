@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using SimplexNoise;
+using System.Threading;
 
 [RequireComponent (typeof(MeshRenderer))]
 [RequireComponent (typeof(MeshCollider))]
@@ -20,9 +21,9 @@ public class Chunk : MonoBehaviour {
 
 	public byte[,,] map;
 	public Mesh visualMesh;
-	protected MeshRenderer meshRenderer;
-	protected MeshCollider meshCollider;
-	protected MeshFilter meshFilter;
+	MeshRenderer meshRenderer;
+	MeshCollider meshCollider;
+	MeshFilter meshFilter;
 
 	// Use this for initialization
 	void Start () {
@@ -31,12 +32,13 @@ public class Chunk : MonoBehaviour {
 		meshCollider = GetComponent<MeshCollider> ();
 		meshFilter = GetComponent<MeshFilter> ();
 		CalculateMapFromScratch ();
-		StartCoroutine (CreateVisualMesh ());
-	}
+        StartCoroutine(CreateVisualMesh());
+    }
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void Update ()
+    {
+
 	}
 
 	public static byte GetTheoreticalByte (Vector3 pos) {
@@ -72,19 +74,21 @@ public class Chunk : MonoBehaviour {
 	}
 
 	public virtual void CalculateMapFromScratch () {
-		map = new byte[width, height, width];
-		Random.seed = World.currentWorld.seed;
-		Vector3 grain0Offset = new Vector3 (Random.value * 10000, Random.value * 10000, Random.value * 10000);
-		Vector3 grain1Offset = new Vector3 (Random.value * 10000, Random.value * 10000, Random.value * 10000);
-		Vector3 grain2Offset = new Vector3 (Random.value * 10000, Random.value * 10000, Random.value * 10000);
-		for (int x = 0; x < World.currentWorld.chunkWidth; x++) {
-			for (int y = 0; y < height; y++) {
-				for (int z = 0; z < width; z++) {
-					map [x, y, z] = GetTheoreticalByte (new Vector3 (x, y, z) + transform.position);
-				}
-			}
-		}
-		
+        map = new byte[width, height, width];
+        Random.seed = World.currentWorld.seed;
+        Vector3 grain0Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
+        Vector3 grain1Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
+        Vector3 grain2Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
+        for (int x = 0; x < World.currentWorld.chunkWidth; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                for (int z = 0; z < width; z++)
+                {
+                    map[x, y, z] = GetTheoreticalByte(new Vector3(x, y, z) + transform.position, grain0Offset, grain1Offset, grain2Offset);
+                }
+            }
+        }
 	}
 
 	public static float CalculateNoiseValue (Vector3 pos, Vector3 offset, float scale) {
@@ -94,7 +98,7 @@ public class Chunk : MonoBehaviour {
 		return Mathf.Max (0, Noise.Generate (noiseX, noiseY, noiseZ));
 	}
 
-	public virtual IEnumerator CreateVisualMesh () {
+	public virtual IEnumerator CreateVisualMesh (bool isChunkload = true) {
 		visualMesh = new Mesh ();
 		List<Vector3> verts = new List<Vector3> ();
 		List<Vector2> uvs = new List<Vector2> ();
@@ -107,26 +111,30 @@ public class Chunk : MonoBehaviour {
 					byte brick = map [x, y, z];
 					// Left wall
 					if (IsTransparent (x - 1, y, z))
-						BuildFace (brick, new Vector3 (x, y, z), Vector3.up, Vector3.forward, false, verts, uvs, tris);
+						BuildFace (brick == 0x1?(byte)5:brick, new Vector3 (x, y, z), Vector3.up, Vector3.forward, false, verts, uvs, tris);
 					// Right wall
 					if (IsTransparent (x + 1, y, z))
-						BuildFace (brick, new Vector3 (x + 1, y, z), Vector3.up, Vector3.forward, true, verts, uvs, tris);
+						BuildFace (brick == 0x1 ? (byte)5 : brick, new Vector3 (x + 1, y, z), Vector3.up, Vector3.forward, true, verts, uvs, tris);
 					// Bottom wall
 					if (IsTransparent (x, y - 1, z))
 						BuildFace (brick, new Vector3 (x, y, z), Vector3.forward, Vector3.right, false, verts, uvs, tris);
 					// Top wall
 					if (IsTransparent (x, y + 1, z))
-						BuildFace (brick, new Vector3 (x, y + 1, z), Vector3.forward, Vector3.right, true, verts, uvs, tris);
+						BuildFace (brick == 0x1? (byte)6 : brick, new Vector3 (x, y + 1, z), Vector3.forward, Vector3.right, true, verts, uvs, tris);
 					// Back
 					if (IsTransparent (x, y, z - 1))
-						BuildFace (brick, new Vector3 (x, y, z), Vector3.up, Vector3.right, true, verts, uvs, tris);
+						BuildFace (brick == 0x1 ? (byte)5 : brick, new Vector3 (x, y, z), Vector3.up, Vector3.right, true, verts, uvs, tris);
 					// Front
 					if (IsTransparent (x, y, z + 1))
-						BuildFace (brick, new Vector3 (x, y, z + 1), Vector3.up, Vector3.right, false, verts, uvs, tris);
+						BuildFace (brick == 0x1 ? (byte)5 : brick, new Vector3 (x, y, z + 1), Vector3.up, Vector3.right, false, verts, uvs, tris);
+                    
+                    
 				}
-			}
-            // prevent lag? Only noticable in build!
-            yield return new WaitForFixedUpdate();
+            }
+            if (isChunkload && Time.time > Time.deltaTime)
+            {
+                yield return new WaitForEndOfFrame();
+            }
         }		
 		visualMesh.vertices = verts.ToArray ();
 		visualMesh.uv = uvs.ToArray ();
@@ -146,13 +154,12 @@ public class Chunk : MonoBehaviour {
 		verts.Add (corner + up + right);
 		verts.Add (corner + right);
 		Vector2 uvWidth = new Vector2 (0.25f, 0.25f);
-		Vector2 uvCorner = new Vector2 (0.00f, 0.75f);
-		uvCorner.x += (float)(brick - 1) / 4;
+		Vector2 uvCorner = new Vector2 ((float)(brick%4 - 1) / 4, 1f - ((Mathf.Floor(brick/4)+1) * 0.25f));
 		uvs.Add (uvCorner);
 		uvs.Add (new Vector2 (uvCorner.x, uvCorner.y + uvWidth.y));
 		uvs.Add (new Vector2 (uvCorner.x + uvWidth.x, uvCorner.y + uvWidth.y));
 		uvs.Add (new Vector2 (uvCorner.x + uvWidth.x, uvCorner.y));
-		if (reversed) {
+        if (reversed) {
 			tris.Add (index + 0);
 			tris.Add (index + 1);
 			tris.Add (index + 2);
@@ -227,29 +234,29 @@ public class Chunk : MonoBehaviour {
 		if (map [x, y, z] == brick)
 			return false;
 		map [x, y, z] = brick;
-		StartCoroutine (CreateVisualMesh ());
+		StartCoroutine (CreateVisualMesh (false));
 		if (x == 0) {
 			Chunk chunk = FindChunk (new Vector3 (x - 2, y, z) + transform.position);
 			if (chunk != null) {
-				StartCoroutine (chunk.CreateVisualMesh ());
+				StartCoroutine (chunk.CreateVisualMesh (false));
 			}
 		}
 		if (x == width - 1) {
 			Chunk chunk = FindChunk (new Vector3 (x + 2, y, z) + transform.position);
 			if (chunk != null) {
-				StartCoroutine (chunk.CreateVisualMesh ());
+				StartCoroutine (chunk.CreateVisualMesh (false));
 			}
 		}
 		if (z == 0) {
 			Chunk chunk = FindChunk (new Vector3 (x, y, z - 2) + transform.position);
 			if (chunk != null) {
-				StartCoroutine (chunk.CreateVisualMesh ());
+				StartCoroutine (chunk.CreateVisualMesh (false));
 			}
 		}
 		if (z == width - 1) {
 			Chunk chunk = FindChunk (new Vector3 (x, y, z + 2) + transform.position);
 			if (chunk != null) {
-				StartCoroutine (chunk.CreateVisualMesh ());
+				StartCoroutine (chunk.CreateVisualMesh (false));
 			}
 		}
 		return true;
