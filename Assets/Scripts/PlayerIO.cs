@@ -13,13 +13,17 @@ public class PlayerIO : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		currentPlayerIO = this;
+        /*
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 144;
+        */
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		playerAnimator.SetBool ("walking", Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.A) || Input.GetKey (KeyCode.S) || Input.GetKey (KeyCode.D));
 		if (GameObject.FindWithTag ("FPSController").transform.position.y < -20) {
-			Debug.Log ("Test");
+			Debug.Log ("Player fell through world, resetting!");
 			GameObject.FindWithTag ("FPSController").transform.position = new Vector3 (GameObject.FindWithTag ("FPSController").transform.position.x, 60, GameObject.FindWithTag ("FPSController").transform.position.z);
 		}
 		if (Input.GetMouseButtonDown (0) || Input.GetMouseButtonDown (1) || Input.GetMouseButtonDown (2) || Input.GetKeyDown(KeyCode.C)) {
