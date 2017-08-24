@@ -39,18 +39,18 @@ namespace SimplexNoise {
 		/// </summary>
 		/// <param name="x"></param>
 		/// <returns></returns>
-		public static float Generate (float x) {
-			int i0 = FastFloor (x);
+		public static float Generate(float x) {
+			int i0 = FastFloor(x);
 			int i1 = i0 + 1;
 			float x0 = x - i0;
 			float x1 = x0 - 1.0f;
 			float n0, n1;
 			float t0 = 1.0f - x0 * x0;
 			t0 *= t0;
-			n0 = t0 * t0 * grad (perm [i0 & 0xff], x0);
+			n0 = t0 * t0 * grad(perm[i0 & 0xff], x0);
 			float t1 = 1.0f - x1 * x1;
 			t1 *= t1;
-			n1 = t1 * t1 * grad (perm [i1 & 0xff], x1);
+			n1 = t1 * t1 * grad(perm[i1 & 0xff], x1);
 			// The maximum value of this noise is 8*(3/4)^4 = 2.53125
 			// A factor of 0.395 scales to fit exactly within [-1,1]
 			return 0.395f * (n0 + n1);
@@ -62,7 +62,7 @@ namespace SimplexNoise {
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public static float Generate (float x, float y) {
+		public static float Generate(float x, float y) {
 			const float F2 = 0.366025403f; // F2 = 0.5*(sqrt(3.0)-1.0)
 			const float G2 = 0.211324865f; // G2 = (3.0-Math.sqrt(3.0))/6.0
 			float n0, n1, n2; // Noise contributions from the three corners
@@ -70,8 +70,8 @@ namespace SimplexNoise {
 			float s = (x + y) * F2; // Hairy factor for 2D
 			float xs = x + s;
 			float ys = y + s;
-			int i = FastFloor (xs);
-			int j = FastFloor (ys);
+			int i = FastFloor(xs);
+			int j = FastFloor(ys);
 			float t = (float)(i + j) * G2;
 			float X0 = i - t; // Unskew the cell origin back to (x,y) space
 			float Y0 = j - t;
@@ -80,7 +80,7 @@ namespace SimplexNoise {
 			// For the 2D case, the simplex shape is an equilateral triangle.
 			// Determine which simplex we are in.
 			int i1, j1; // Offsets for second (middle) corner of simplex in (i,j) coords
-			if (x0 > y0) {
+			if(x0 > y0) {
 				i1 = 1;
 				j1 = 0;
 				// lower triangle, XY order: (0,0)->(1,0)->(1,1)
@@ -101,32 +101,32 @@ namespace SimplexNoise {
 			int jj = j % 256;
 			// Calculate the contribution from the three corners
 			float t0 = 0.5f - x0 * x0 - y0 * y0;
-			if (t0 < 0.0f)
+			if(t0 < 0.0f)
 				n0 = 0.0f;
 			else {
 				t0 *= t0;
-				n0 = t0 * t0 * grad (perm [ii + perm [jj]], x0, y0); 
+				n0 = t0 * t0 * grad(perm[ii + perm[jj]], x0, y0); 
 			}
 			float t1 = 0.5f - x1 * x1 - y1 * y1;
-			if (t1 < 0.0f)
+			if(t1 < 0.0f)
 				n1 = 0.0f;
 			else {
 				t1 *= t1;
-				n1 = t1 * t1 * grad (perm [ii + i1 + perm [jj + j1]], x1, y1);
+				n1 = t1 * t1 * grad(perm[ii + i1 + perm[jj + j1]], x1, y1);
 			}
 			float t2 = 0.5f - x2 * x2 - y2 * y2;
-			if (t2 < 0.0f)
+			if(t2 < 0.0f)
 				n2 = 0.0f;
 			else {
 				t2 *= t2;
-				n2 = t2 * t2 * grad (perm [ii + 1 + perm [jj + 1]], x2, y2);
+				n2 = t2 * t2 * grad(perm[ii + 1 + perm[jj + 1]], x2, y2);
 			}
 			// Add contributions from each corner to get the final noise value.
 			// The result is scaled to return values in the interval [-1,1].
 			return 40.0f * (n0 + n1 + n2); // TODO: The scale factor is preliminary!
 		}
 
-		public static float Generate (float x, float y, float z) {
+		public static float Generate(float x, float y, float z) {
 			// Simple skewing factors for the 3D case
 			const float F3 = 0.333333333f;
 			const float G3 = 0.166666667f;
@@ -136,9 +136,9 @@ namespace SimplexNoise {
 			float xs = x + s;
 			float ys = y + s;
 			float zs = z + s;
-			int i = FastFloor (xs);
-			int j = FastFloor (ys);
-			int k = FastFloor (zs);
+			int i = FastFloor(xs);
+			int j = FastFloor(ys);
+			int k = FastFloor(zs);
 			float t = (float)(i + j + k) * G3; 
 			float X0 = i - t; // Unskew the cell origin back to (x,y,z) space
 			float Y0 = j - t;
@@ -151,8 +151,8 @@ namespace SimplexNoise {
 			int i1, j1, k1; // Offsets for second corner of simplex in (i,j,k) coords
 			int i2, j2, k2; // Offsets for third corner of simplex in (i,j,k) coords
 			/* This code would benefit from a backport from the GLSL version! */
-			if (x0 >= y0) {
-				if (y0 >= z0) {
+			if(x0 >= y0) {
+				if(y0 >= z0) {
 					i1 = 1;
 					j1 = 0;
 					k1 = 0;
@@ -160,7 +160,7 @@ namespace SimplexNoise {
 					j2 = 1;
 					k2 = 0;
 				} // X Y Z order
-                else if (x0 >= z0) {
+                else if(x0 >= z0) {
 					i1 = 1;
 					j1 = 0;
 					k1 = 0;
@@ -177,7 +177,7 @@ namespace SimplexNoise {
 					k2 = 1;
 				} // Z X Y order
 			} else { // x0<y0
-				if (y0 < z0) {
+				if(y0 < z0) {
 					i1 = 0;
 					j1 = 0;
 					k1 = 1;
@@ -185,7 +185,7 @@ namespace SimplexNoise {
 					j2 = 1;
 					k2 = 1;
 				} // Z Y X order
-                else if (x0 < z0) {
+                else if(x0 < z0) {
 					i1 = 0;
 					j1 = 1;
 					k1 = 0;
@@ -225,35 +225,35 @@ namespace SimplexNoise {
 
 			// Calculate the contribution from the four corners
 			float t0 = 0.6f - x0 * x0 - y0 * y0 - z0 * z0;
-			if (t0 < 0.0f)
+			if(t0 < 0.0f)
 				n0 = 0.0f;
 			else {
 				t0 *= t0;
-				n0 = t0 * t0 * grad (perm [ii + perm [jj + perm [kk]]], x0, y0, z0);
+				n0 = t0 * t0 * grad(perm[ii + perm[jj + perm[kk]]], x0, y0, z0);
 			}
 
 			float t1 = 0.6f - x1 * x1 - y1 * y1 - z1 * z1;
-			if (t1 < 0.0f)
+			if(t1 < 0.0f)
 				n1 = 0.0f;
 			else {
 				t1 *= t1;
-				n1 = t1 * t1 * grad (perm [ii + i1 + perm [jj + j1 + perm [kk + k1]]], x1, y1, z1);
+				n1 = t1 * t1 * grad(perm[ii + i1 + perm[jj + j1 + perm[kk + k1]]], x1, y1, z1);
 			}
 
 			float t2 = 0.6f - x2 * x2 - y2 * y2 - z2 * z2;
-			if (t2 < 0.0f)
+			if(t2 < 0.0f)
 				n2 = 0.0f;
 			else {
 				t2 *= t2;
-				n2 = t2 * t2 * grad (perm [ii + i2 + perm [jj + j2 + perm [kk + k2]]], x2, y2, z2);
+				n2 = t2 * t2 * grad(perm[ii + i2 + perm[jj + j2 + perm[kk + k2]]], x2, y2, z2);
 			}
 
 			float t3 = 0.6f - x3 * x3 - y3 * y3 - z3 * z3;
-			if (t3 < 0.0f)
+			if(t3 < 0.0f)
 				n3 = 0.0f;
 			else {
 				t3 *= t3;
-				n3 = t3 * t3 * grad (perm [ii + 1 + perm [jj + 1 + perm [kk + 1]]], x3, y3, z3);
+				n3 = t3 * t3 * grad(perm[ii + 1 + perm[jj + 1 + perm[kk + 1]]], x3, y3, z3);
 			}
 
 			// Add contributions from each corner to get the final noise value.
@@ -289,33 +289,33 @@ namespace SimplexNoise {
 			138, 236, 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180 
 		};
 
-		private static int FastFloor (float x) {
+		private static int FastFloor(float x) {
 			return (x > 0) ? ((int)x) : (((int)x) - 1);
 		}
 
-		private static float grad (int hash, float x) {
+		private static float grad(int hash, float x) {
 			int h = hash & 15;
 			float grad = 1.0f + (h & 7);   // Gradient value 1.0, 2.0, ..., 8.0
-			if ((h & 8) != 0)
+			if((h & 8) != 0)
 				grad = -grad;         // Set a random sign for the gradient
 			return (grad * x);           // Multiply the gradient with the distance
 		}
 
-		private static float grad (int hash, float x, float y) {
+		private static float grad(int hash, float x, float y) {
 			int h = hash & 7;      // Convert low 3 bits of hash code
 			float u = h < 4 ? x : y;  // into 8 simple gradient directions,
 			float v = h < 4 ? y : x;  // and compute the dot product with (x,y).
 			return ((h & 1) != 0 ? -u : u) + ((h & 2) != 0 ? -2.0f * v : 2.0f * v);
 		}
 
-		private static float grad (int hash, float x, float y, float z) {
+		private static float grad(int hash, float x, float y, float z) {
 			int h = hash & 15;     // Convert low 4 bits of hash code into 12 simple
 			float u = h < 8 ? x : y; // gradient directions, and compute dot product.
 			float v = h < 4 ? y : h == 12 || h == 14 ? x : z; // Fix repeats at h = 12 to 15
 			return ((h & 1) != 0 ? -u : u) + ((h & 2) != 0 ? -v : v);
 		}
 
-		private static float grad (int hash, float x, float y, float z, float t) {
+		private static float grad(int hash, float x, float y, float z, float t) {
 			int h = hash & 31;      // Convert low 5 bits of hash code into 32 simple
 			float u = h < 24 ? x : y; // gradient directions, and compute dot product.
 			float v = h < 16 ? y : z;
