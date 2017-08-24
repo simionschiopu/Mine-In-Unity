@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class DayNightCycle : MonoBehaviour {
 	
-	float hourOfDay = 9f;
 	public float timeSpeed = 0.6f;
 
-	// Update is called once per frame
-	void Update () {
-		transform.Rotate (0f, 0f, Time.deltaTime * Time.timeScale * timeSpeed);
+	void Update() {
+		transform.Rotate(0f, 0f, Time.deltaTime * Time.timeScale * timeSpeed);
 	}
 
 	public float HourOfDay {
@@ -18,7 +16,7 @@ public class DayNightCycle : MonoBehaviour {
 		}
 		set {
 			Quaternion q = transform.rotation;
-			q.eulerAngles = new Vector3 (q.eulerAngles.x, q.eulerAngles.y, (value / 24f) * 360f);
+			q.eulerAngles = new Vector3(q.eulerAngles.x, q.eulerAngles.y, (value / 24f) * 360f);
 			transform.rotation = q;
 		}
 	}
