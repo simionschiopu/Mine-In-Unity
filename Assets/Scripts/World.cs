@@ -30,6 +30,15 @@ public class World : MonoBehaviour {
 				}
 			}
 		}
-	}
+
+        for (int a = 0; a < Chunk.chunks.Count; a++){
+            if (Vector3.Distance(transform.position - Vector3.up * transform.position.y, Chunk.chunks[a].transform.position) > viewRange){
+                Destroy((Object)Chunk.chunks[a].GetComponent<MeshFilter>().sharedMesh);
+                Destroy(Chunk.chunks[a].GetComponent<MeshRenderer>().material, .1f);
+                Destroy(Chunk.chunks[a].gameObject, .2f);
+                Chunk.chunks.Remove(Chunk.chunks[a]);
+            }
+        }
+    }
 
 }

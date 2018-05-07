@@ -128,8 +128,11 @@ public class Chunk : MonoBehaviour {
 			if(isChunkload && Time.time > Time.deltaTime) {
 				yield return new WaitForEndOfFrame();
 			}
-		}		
-		visualMesh.vertices = verts.ToArray();
+		}
+
+        visualMesh.Clear();
+
+        visualMesh.vertices = verts.ToArray();
 		visualMesh.uv = uvs.ToArray();
 		visualMesh.triangles = tris.ToArray();
 		visualMesh.RecalculateBounds();
