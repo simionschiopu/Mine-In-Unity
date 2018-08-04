@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2300000}
   - component: {fileID: 11400000}
   m_Layer: 0
-  m_Name: Chunk
+  m_Name: NoiseChunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -99,9 +99,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c989ae7dd4142dc4d8ba67d5b4166a30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshCollider: {fileID: 6400000}
-  meshFilter: {fileID: 3300000}
-  meshRenderer: {fileID: 2300000}
+  MeshCollider: {fileID: 6400000}
+  MeshFilter: {fileID: 3300000}
+  MeshRenderer: {fileID: 2300000}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

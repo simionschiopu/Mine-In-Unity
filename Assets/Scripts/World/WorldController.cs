@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using Repository;
 using UnityEngine;
+using World.Chunks;
 
 namespace World
 {
     public class WorldController : MonoBehaviour
     {
-        private readonly List<FlatChunk> chunks = new List<FlatChunk>();
+        private readonly List<Chunk> chunks = new List<Chunk>();
 
         public int ChunkWidth = 16;
 
@@ -18,13 +20,20 @@ namespace World
         private float viewRange = 65;
 
         [SerializeField]
-        private FlatChunk noiseChunkFab;
+        private Chunk[] chunkWorldPrefabs;
+
+        private Chunk chunkPrefab;
 
         [SerializeField]
         private Transform playerTransfrom;
 
+        private ISettingsRepository settingsRepository;
+
         private void Awake()
         {
+            settingsRepository = new SettingsRepository();
+            chunkPrefab = chunkWorldPrefabs[(int) settingsRepository.GetWorldType()];
+
             if (Seed == 0)
                 Seed = Random.Range(0, int.MaxValue);
         }
@@ -48,7 +57,7 @@ namespace World
 
                     if (Vector3.Distance(pos, playerTransfrom.position) < viewRange)
                     {
-                        var newChunk = Instantiate(noiseChunkFab, pos, Quaternion.identity, transform);
+                        var newChunk = Instantiate(chunkPrefab, pos, Quaternion.identity, transform);
                         newChunk.Init(this);
                         chunks.Add(newChunk);
                     }
@@ -68,7 +77,7 @@ namespace World
             }
         }
 
-        public FlatChunk FindChunk(Vector3 pos)
+        public Chunk FindChunk(Vector3 pos)
         {
             foreach (var chunk in chunks)
             {

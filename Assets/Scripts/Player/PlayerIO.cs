@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using World;
+using World.Chunks;
 
 namespace Player
 {
@@ -12,7 +13,7 @@ namespace Player
 
         private void Awake()
         {
-            Cursor.lockState = CursorLockMode.Locked;
+//            Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
 
@@ -22,7 +23,7 @@ namespace Player
                            || Input.GetKey(KeyCode.A)
                            || Input.GetKey(KeyCode.S)
                            || Input.GetKey(KeyCode.D);
-//            PlayerAnimator.SetBool("walking", isWaling);
+            PlayerAnimator.SetBool("walking", isWaling);
 
             if (GameObject.FindWithTag("FPSController").transform.position.y < -20)
             {

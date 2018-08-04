@@ -3,46 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using World.Externals;
 
-namespace World
+namespace World.Chunks
 {
-    [RequireComponent(typeof(MeshRenderer))]
-    [RequireComponent(typeof(MeshCollider))]
-    [RequireComponent(typeof(MeshFilter))]
-    public sealed class FlatChunk : MonoBehaviour
+    public sealed class NoiseChunk : Chunk
     {
-        [SerializeField]
-        private MeshCollider meshCollider;
-
-        [SerializeField]
-        private MeshFilter meshFilter;
-
-        [SerializeField]
-        private MeshRenderer meshRenderer;
-
-        private Mesh visualMesh;
-
-        private int width;
-        private int height;
-
-        private byte[,,] map;
-
-        private WorldController world;
-
-        public void Init(WorldController worldController)
-        {
-            world = worldController;
-            name = "Chunk " + transform.position.x + " | " + transform.position.z;
-
-            width = worldController.ChunkWidth;
-            height = world.ChunkHeight;
-
-            CalculateMapFromScratch();
-            StartCoroutine(CreateVisualMesh());
-        }
-
         private byte GetTheoreticalByte(Vector3 pos)
         {
-            Random.InitState(world.Seed);
+            Random.InitState(World.Seed);
 
             var grain0Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
             var grain1Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
@@ -53,45 +20,44 @@ namespace World
 
         private byte GetTheoreticalByte(Vector3 pos, Vector3 offset0, Vector3 offset1, Vector3 offset2)
         {
-//            float heightBase = 10;
-//            float maxHeight = height - 10;
-//            float heightSwing = maxHeight - heightBase;
-//            byte brick = 1;
-//            float clusterValue = CalculateNoiseValue(pos, offset2, 0.02f);
-//            float blobValue = CalculateNoiseValue(pos, offset1, 0.05f);
-//            float mountainValue = CalculateNoiseValue(pos, offset0, 0.009f);
-//
-//            if (mountainValue == 0 && blobValue < 0.2f)
-//                brick = 2;
-//            else if (clusterValue > 0.9f)
-//                brick = 1;
-//            else if (clusterValue > 0.8f)
-//                brick = 3;
-//
-//            mountainValue = Mathf.Sqrt(mountainValue);
-//            mountainValue *= heightSwing;
-//            mountainValue += heightBase;
-//            mountainValue += blobValue * 10 - 5f;
+            float heightBase = 10;
+            float maxHeight = Height - 10;
+            float heightSwing = maxHeight - heightBase;
+            byte brick = 1;
+            float clusterValue = CalculateNoiseValue(pos, offset1, 0.02f);
+            float blobValue = CalculateNoiseValue(pos, offset1, 0.05f);
+            float mountainValue = CalculateNoiseValue(pos, offset0, 0.009f);
 
-            return (int)pos.y == height / 2 ? (byte) 1 : (byte) 0;
+            if (mountainValue == 0 && blobValue < 0.2f)
+                brick = 2;
+            else if (clusterValue > 0.9f)
+                brick = 1;
+            else if (clusterValue > 0.8f)
+                brick = 3;
+
+            mountainValue = Mathf.Sqrt(mountainValue);
+            mountainValue *= heightSwing;
+            mountainValue += heightBase;
+            mountainValue += blobValue * 10 - 5f;
+
+            return mountainValue >= pos.y ? brick : (byte) 0;
         }
 
-        private void CalculateMapFromScratch()
+        protected override void CalculateMapFromScratch()
         {
-            map = new byte[width, height, width];
-            Random.InitState(world.Seed);
+            Random.InitState(World.Seed);
 
             var grain0Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
             var grain1Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
             var grain2Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
 
-            for (int x = 0; x < world.ChunkWidth; x++)
+            for (int x = 0; x < World.ChunkWidth; x++)
             {
-                for (int y = 0; y < height; y++)
+                for (int y = 0; y < Height; y++)
                 {
-                    for (int z = 0; z < width; z++)
+                    for (int z = 0; z < Width; z++)
                     {
-                        map[x, y, z] = GetTheoreticalByte(
+                        Map[x, y, z] = GetTheoreticalByte(
                             new Vector3(x, y, z) + transform.position,
                             grain0Offset,
                             grain1Offset,
@@ -110,23 +76,23 @@ namespace World
             return Mathf.Max(0, Noise.Generate(noiseX, noiseY, noiseZ));
         }
 
-        public IEnumerator CreateVisualMesh(bool isChunkload = true)
+        public override IEnumerator CreateVisualMesh(bool isChunkload = true)
         {
-            visualMesh = new Mesh();
+            VisualMesh = new Mesh();
             var verts = new List<Vector3>();
             var uvs = new List<Vector2>();
             var tris = new List<int>();
 
-            for (var x = 0; x < width; x++)
+            for (var x = 0; x < Width; x++)
             {
-                for (var y = 0; y < height; y++)
+                for (var y = 0; y < Height; y++)
                 {
-                    for (var z = 0; z < width; z++)
+                    for (var z = 0; z < Width; z++)
                     {
-                        if (map[x, y, z] == 0)
+                        if (Map[x, y, z] == 0)
                             continue;
 
-                        var brick = map[x, y, z];
+                        var brick = Map[x, y, z];
                         // Left wall
                         if (IsTransparent(x - 1, y, z))
                             BuildFace(brick == 0x1 ? (byte) 5 : brick, new Vector3(x, y, z), Vector3.up,
@@ -162,16 +128,16 @@ namespace World
                 }
             }
 
-            visualMesh.Clear();
+            VisualMesh.Clear();
 
-            visualMesh.vertices = verts.ToArray();
-            visualMesh.uv = uvs.ToArray();
-            visualMesh.triangles = tris.ToArray();
-            visualMesh.RecalculateBounds();
-            visualMesh.RecalculateNormals();
-            meshFilter.mesh = visualMesh;
-            meshCollider.sharedMesh = null;
-            meshCollider.sharedMesh = visualMesh;
+            VisualMesh.vertices = verts.ToArray();
+            VisualMesh.uv = uvs.ToArray();
+            VisualMesh.triangles = tris.ToArray();
+            VisualMesh.RecalculateBounds();
+            VisualMesh.RecalculateNormals();
+            MeshFilter.mesh = VisualMesh;
+            MeshCollider.sharedMesh = null;
+            MeshCollider.sharedMesh = VisualMesh;
 
             yield return 0;
         }
@@ -226,15 +192,15 @@ namespace World
             }
         }
 
-        private byte GetByte(int x, int y, int z)
+        public override byte GetByte(int x, int y, int z)
         {
-            if (y < 0 || y >= height)
+            if (y < 0 || y >= Height)
                 return 0;
 
-            if (x >= 0 && z >= 0 && x < width && z < width) return map[x, y, z];
+            if (x >= 0 && z >= 0 && x < Width && z < Width) return Map[x, y, z];
 
             var worldPos = new Vector3(x, y, z) + transform.position;
-            var chunk = world.FindChunk(worldPos);
+            var chunk = World.FindChunk(worldPos);
             if (chunk == this)
                 return 0;
 
@@ -243,7 +209,7 @@ namespace World
                 : chunk.GetByte(worldPos);
         }
 
-        public byte GetByte(Vector3 worldPos)
+        public override byte GetByte(Vector3 worldPos)
         {
             worldPos -= transform.position;
             var x = Mathf.FloorToInt(worldPos.x);
@@ -253,7 +219,7 @@ namespace World
             return GetByte(x, y, z);
         }
 
-        public bool SetBrick(byte brick, Vector3 worldPos)
+        public override bool SetBrick(byte brick, Vector3 worldPos)
         {
             worldPos -= transform.position;
 
@@ -261,29 +227,29 @@ namespace World
                 Mathf.FloorToInt(worldPos.z));
         }
 
-        public bool SetBrick(byte brick, int x, int y, int z)
+        public override bool SetBrick(byte brick, int x, int y, int z)
         {
-            if (x < 0 || y < 0 || z < 0 || x >= width || y >= height || z >= width)
+            if (x < 0 || y < 0 || z < 0 || x >= Width || y >= Height || z >= Width)
                 return false;
 
-            if (map[x, y, z] == brick)
+            if (Map[x, y, z] == brick)
                 return false;
 
-            map[x, y, z] = brick;
+            Map[x, y, z] = brick;
             StartCoroutine(CreateVisualMesh(false));
 
             if (x == 0)
             {
-                var chunk = world.FindChunk(new Vector3(x - 2, y, z) + transform.position);
+                var chunk = World.FindChunk(new Vector3(x - 2, y, z) + transform.position);
                 if (chunk != null)
                 {
                     StartCoroutine(chunk.CreateVisualMesh(false));
                 }
             }
 
-            if (x == width - 1)
+            if (x == Width - 1)
             {
-                var chunk = world.FindChunk(new Vector3(x + 2, y, z) + transform.position);
+                var chunk = World.FindChunk(new Vector3(x + 2, y, z) + transform.position);
                 if (chunk != null)
                 {
                     StartCoroutine(chunk.CreateVisualMesh(false));
@@ -292,16 +258,16 @@ namespace World
 
             if (z == 0)
             {
-                var chunk = world.FindChunk(new Vector3(x, y, z - 2) + transform.position);
+                var chunk = World.FindChunk(new Vector3(x, y, z - 2) + transform.position);
                 if (chunk != null)
                 {
                     StartCoroutine(chunk.CreateVisualMesh(false));
                 }
             }
 
-            if (z == width - 1)
+            if (z == Width - 1)
             {
-                var chunk = world.FindChunk(new Vector3(x, y, z + 2) + transform.position);
+                var chunk = World.FindChunk(new Vector3(x, y, z + 2) + transform.position);
                 if (chunk != null)
                 {
                     StartCoroutine(chunk.CreateVisualMesh(false));
@@ -313,8 +279,8 @@ namespace World
 
         private void OnDestroy()
         {
-            Destroy(meshFilter.sharedMesh);
-            Destroy(meshRenderer.material);
+            Destroy(MeshFilter.sharedMesh);
+            Destroy(MeshRenderer.material);
         }
     }
 }
