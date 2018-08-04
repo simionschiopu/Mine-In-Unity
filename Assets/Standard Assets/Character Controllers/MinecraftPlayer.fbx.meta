@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 4783aadae216f2140afd1967eda81d71
 ModelImporter:
-  serializedVersion: 15
+  serializedVersion: 23
   fileIDToRecycleName:
     100000: body
     100002: Camera
@@ -45,20 +45,40 @@ ModelImporter:
     9500000: //RootNode
     13700000: Player_0
     13700002: Player
+    2186277476908879412: ImportLogs
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Player__char_png
+    second: {fileID: 2100000, guid: b5b3956acb79c4c419da73d451024c28, type: 2}
   materials:
     importMaterials: 1
     materialName: 2
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleCurves: 1
     optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: "Invalid Avatar Rig Configuration. Missing or invalid transform:\n\tRequired
+      human bone 'LeftFoot' not found\n"
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 3
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -66,24 +86,34 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 4
+    normalCalculationMode: 0
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 2
     human:
     - boneName: root_0
       humanName: Hips
@@ -175,93 +205,101 @@ ModelImporter:
         modified: 0
     skeleton:
     - name: MinecraftPlayer(Clone)
+      parentName: 
       position: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0, w: 1}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Camera
+      parentName: 
       position: {x: 0, y: 1.5, z: 6}
-      rotation: {x: -.00617037341, y: -.707079828, z: .00617037341, w: .707079887}
-      scale: {x: .99999994, y: .99999994, z: 1}
-      transformModified: 1
+      rotation: {x: -0.0061703734, y: -0.7070798, z: 0.0061703734, w: 0.7070799}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1}
     - name: Player_0
+      parentName: 
       position: {x: 0, y: 0, z: 0}
-      rotation: {x: -.707106888, y: 0, z: -0, w: .707106769}
-      scale: {x: .5, y: .5, z: .5}
-      transformModified: 1
+      rotation: {x: -0.7071069, y: 0, z: -0, w: 0.70710677}
+      scale: {x: 0.5, y: 0.5, z: 0.5}
     - name: PlayerArmature
-      position: {x: 0, y: 1.06277966, z: 0}
-      rotation: {x: -.707106888, y: 0, z: -0, w: .707106769}
-      scale: {x: .5, y: .5, z: .5}
-      transformModified: 1
+      parentName: 
+      position: {x: 0, y: 1.0627797, z: 0}
+      rotation: {x: -0.7071069, y: 0, z: -0, w: 0.70710677}
+      scale: {x: 0.5, y: 0.5, z: 0.5}
     - name: root_0
-      position: {x: -0, y: 0, z: -.423761725}
-      rotation: {x: .5, y: .5, z: -.5, w: .5}
+      parentName: 
+      position: {x: -0, y: 0, z: -0.42376173}
+      rotation: {x: 0.5, y: 0.5, z: -0.5, w: 0.5}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: body
-      position: {x: -.341935515, y: 2.58154138e-08, z: 0}
+      parentName: 
+      position: {x: -0.34193552, y: 0.000000025815414, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: top
-      position: {x: -1.95626521, y: 1.47693925e-07, z: -2.99999969e-15}
-      rotation: {x: 1, y: -7.54979013e-08, z: 4.37113883e-08, w: -7.55001537e-08}
+      parentName: 
+      position: {x: -1.9562652, y: 0.00000014769392, z: -2.9999997e-15}
+      rotation: {x: 1, y: -0.0000000754979, z: 0.00000004371139, w: -0.000000075500154}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: uarm_L
-      position: {x: -1.65516734, y: -.905686736, z: 1.31614026e-08}
-      rotation: {x: 1.06071717e-07, y: 2.52986823e-08, z: .798305094, w: .602253318}
+      parentName: 
+      position: {x: -1.6551673, y: -0.90568674, z: 0.000000013161403}
+      rotation: {x: 0.00000010607172, y: 0.000000025298682, z: 0.7983051, w: 0.6022533}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: larm_L
-      position: {x: -.654940486, y: 4.54074183e-08, z: 1.80000007e-14}
-      rotation: {x: -1.28392927e-07, y: 3.77522582e-08, z: .0762128532, w: .997091591}
-      scale: {x: .99999994, y: .99999994, z: 1}
-      transformModified: 1
+      parentName: 
+      position: {x: -0.6549405, y: 0.00000004540742, z: 1.8e-14}
+      rotation: {x: -0.00000012839293, y: 0.000000037752258, z: 0.07621285, w: 0.9970916}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1}
     - name: uarm_R
-      position: {x: -1.6551671, y: .905686975, z: 1.31614026e-08}
-      rotation: {x: 4.17391206e-08, y: 7.50616422e-08, z: .798304975, w: -.602253377}
+      parentName: 
+      position: {x: -1.6551671, y: 0.905687, z: 0.000000013161403}
+      rotation: {x: 0.00000004173912, y: 0.00000007506164, z: 0.798305, w: -0.6022534}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: larm_R
-      position: {x: -.654940486, y: 5.50251009e-08, z: 0}
-      rotation: {x: 1.02639071e-07, y: 2.29707009e-08, z: -.0762128606, w: .997091591}
-      scale: {x: .99999994, y: .99999994, z: 1}
-      transformModified: 1
+      parentName: 
+      position: {x: -0.6549405, y: 0.0000000550251, z: 0}
+      rotation: {x: 0.00000010263907, y: 0.000000022970701, z: -0.07621286, w: 0.9970916}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1}
     - name: uleg_L
-      position: {x: -.21524182, y: -.338408351, z: 5.53795898e-09}
-      rotation: {x: 1.51898514e-15, y: 4.37113883e-08, z: 1, w: -4.37091323e-08}
+      parentName: 
+      position: {x: -0.21524182, y: -0.33840835, z: 0.000000005537959}
+      rotation: {x: 1.5189851e-15, y: 0.00000004371139, z: 1, w: -0.000000043709132}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: lleg_L
-      position: {x: -.85425961, y: 5.04353004e-08, z: 0}
+      parentName: 
+      position: {x: -0.8542596, y: 0.0000000504353, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: uleg_R
-      position: {x: -.21524176, y: .338408411, z: 5.53795898e-09}
-      rotation: {x: -5.34015903e-15, y: -4.37113883e-08, z: 1, w: 4.37091323e-08}
+      parentName: 
+      position: {x: -0.21524176, y: 0.3384084, z: 0.000000005537959}
+      rotation: {x: -5.340159e-15, y: -0.00000004371139, z: 1, w: 0.000000043709132}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: lleg_R
-      position: {x: -.85425961, y: 5.04353004e-08, z: -2.99999969e-15}
+      parentName: 
+      position: {x: -0.8542596, y: 0.0000000504353, z: -2.9999997e-15}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Sun
-      position: {x: -1.51981843, y: 5.3833971, z: 6.11083698}
-      rotation: {x: .464420855, y: .0796379745, z: .155300483, w: .868247032}
-      scale: {x: 1, y: 1, z: .999999821}
-      transformModified: 1
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+      parentName: 
+      position: {x: -1.5198184, y: 5.383397, z: 6.110837}
+      rotation: {x: 0.46442086, y: 0.079637975, z: 0.15530048, w: 0.86824703}
+      scale: {x: 1, y: 1, z: 0.9999998}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 3
+  humanoidOversampling: 1
+  additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 
